@@ -16,12 +16,6 @@ const userSchema = new mongoose.Schema({
         minLength: 3,
         maxLength: 50
     },
-    phoneNumber: {
-        type: String,
-        unique:true,
-        trim: true,
-        match: [/^[0-9]{10}$/, 'Please enter a valid phone number'],
-    },
     address: {
         type: String,
         trim: true,
@@ -40,6 +34,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'User password is required'],
         minLength: 8,
+        select: false
     },
     roles: {
         type: [String],
