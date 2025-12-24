@@ -17,7 +17,7 @@ const authorize = async (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
 
         //check if user exists without retrieving the password
-        const user = await user.findById(decoded.userId).select('-password');
+        const user = await User.findById(decoded.userId).select('-password');
 
         if(!user){
             return res.status(401).json({ message: 'Unauthorized' });
