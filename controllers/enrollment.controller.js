@@ -1,65 +1,65 @@
-import Formation from "../models/formation.model.js";
+import Enrollment from "../models/enrollment.model.js";
 
-export const createFormation = async (req, res, next) => {
+export const createEnrollment = async (req, res, next) => {
     try {
-        const newFormation = new Formation(req.body);
-        await newFormation.save();
+        const newEnrollment = new Enrollment(req.body);
+        await newEnrollment.save();
         res.status(201).json({
             success: true,
-            data: newFormation,
+            data: newEnrollment,
         });
     } catch (error) {
         next(error);
     }
 };
 
-export const getFormations = async (req, res, next) => {
+export const getEnrollments = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
         const skip = (page - 1) * pageSize;
 
-        const totalFormations = await Formation.countDocuments();
-        const formations = await Formation.find()
+        const totalEnrollments = await Enrollment.countDocuments();
+        const enrollments = await Enrollment.find()
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(pageSize);
 
         res.status(200).json({
             success: true,
-            count: formations.length,
+            count: enrollments.length,
             page,
             pageSize,
-            totalFormations,
-            data: formations,
+            totalEnrollments,
+            data: enrollments,
         });
     } catch (error) {
         next(error);
     }
 };
 
-export const getFormation = async (req, res, next) => {
+export const getEnrollment = async (req, res, next) => {
     try {
-        const formation = await Formation.findById(req.params.id);
+        const enrollment = await Enrollment.findById(req.params.id);
 
-        if (!formation) {
-            const error = new Error("Formation not found");
+        if (!enrollment) {
+            const error = new Error("Enrollment not found");
             error.statusCode = 404;
             throw error;
         }
 
         res.status(200).json({
             success: true,
-            data: formation,
+            data: enrollment,
         });
     } catch (error) {
         next(error);
     }
 };
 
-export const updateFormation = async (req, res, next) => {
+export const updateEnrollment = async (req, res, next) => {
     try {
-        const formation = await Formation.findByIdAndUpdate(
+        const enrollment = await Enrollment.findByIdAndUpdate(
             req.params.id,
             req.body,
             {
@@ -68,27 +68,27 @@ export const updateFormation = async (req, res, next) => {
             }
         );
 
-        if (!formation) {
-            const error = new Error("Formation not found");
+        if (!enrollment) {
+            const error = new Error("Enrollment not found");
             error.statusCode = 404;
             throw error;
         }
 
         res.status(200).json({
             success: true,
-            data: formation,
+            data: enrollment,
         });
     } catch (error) {
         next(error);
     }
 };
 
-export const deleteFormation = async (req, res, next) => {
+export const deleteEnrollment = async (req, res, next) => {
     try {
-        const formation = await Formation.findByIdAndDelete(req.params.id);
+        const enrollment = await Enrollment.findByIdAndDelete(req.params.id);
 
-        if (!formation) {
-            const error = new Error("Formation not found");
+        if (!enrollment) {
+            const error = new Error("Enrollment not found");
             error.statusCode = 404;
             throw error;
         }

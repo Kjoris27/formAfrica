@@ -2,45 +2,83 @@ import mongoose from 'mongoose';
 
 const formationSchema = new mongoose.Schema({
     title: {
-        type: String,
-        required: [true, 'Formation name is required'],
-        trim: true,
-        minLength: 3,
-        maxLength: 50
+      type: String,
+      required: true,
+      trim: true
     },
+  
     description: {
-        type: String,
-        required: [true, 'Formation description is required'],
-        trim: true,
-        minLength: 3,
-        maxLength: 100
+      type: String,
+      required: true,
+      trim: true
     },
+  
     category: {
-        type: String,
-        enum: ['artisanat', 'bricolage', 'cuisine', 'couture','finance', 'other'],
-        required: true,
+      type: String,
+      enum: ['artisanat', 'bricolage', 'cuisine', 'couture', 'finance', 'other'],
+      required: true
     },
+  
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+  
     price: {
-        type: Number,
-        required: [true, 'Formation price is required'],
+      type: Number,
+      required: true
     },
+  
     currency: {
-        type: String,
-        enum: ['XOF', 'GHC', 'NGN', 'USD', 'EUR'],
-        required: [true, 'Formation currency is required'],
+      type: String,
+      enum: ['XOF', 'GHC', 'NGN', 'USD', 'EUR'],
+      default: 'XOF'
     },
+  
     duration: {
-        type: Number,
-        required: [true, 'Formation duration is required'],
+  value: { type: Number, required: true },
+  unit: {
+    type: String,
+    enum: ['hour', 'day', 'week', 'month'],
+    required: true
+  }
+}
+,
+  
+    level: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced'],
+      default: 'beginner'
     },
+  
+    maxStudents: {
+      type: Number,
+      default: 20
+    },
+  
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'archived'],
+      default: 'draft'
+    },
+  
+    location: {
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      country: { type: String, required: true },
+      coordinates: {
+        lat: Number,
+        lng: Number
+      }
+    },
+  
     isActive: {
-        type: Boolean,
-        default: true
+      type: Boolean,
+      default: true
     }
-
-}, { timestamps: true });
+  
+  }, { timestamps: true });
+  
+const Formation = mongoose.model('Formation', formationSchema);
+export default Formation;
