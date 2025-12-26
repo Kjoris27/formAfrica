@@ -17,7 +17,7 @@ const formationSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['artisanat', 'bricolage', 'cuisine', 'couture', 'other'],
+        enum: ['artisanat', 'bricolage', 'cuisine', 'couture','finance', 'other'],
         required: true,
     },
     createdBy: {

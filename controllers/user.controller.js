@@ -1,18 +1,39 @@
 import User from "../models/user.model.js";
 
-export const getUsers = async(req, res, next) => {
+export const getUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
-        res.status(200).json({
-            success: true,
-            data: users
-        });
-
-    } catch(error){
-        next(error);
+      const page = Math.max(parseInt(req.query.page) || 1, 1);
+      const pageSize = Math.min(
+        Math.max(parseInt(req.query.pageSize) || 10, 1),
+        100
+      );
+  
+      const skip = (page - 1) * pageSize;
+  
+      const totalUsers = await User.countDocuments();
+      const totalPages = Math.ceil(totalUsers / pageSize);
+  
+      const users = await User.find()
+        .select('-password')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize);
+  
+      res.status(200).json({
+        success: true,
+        count: users.length,
+        page,
+        pageSize,
+        // totalPages,
+        // totalUsers,
+        data: users
+      });
+  
+    } catch (error) {
+      next(error);
     }
-
-}
+  };
+  
 
 export const getUser = async(req, res, next) => {
     try {
