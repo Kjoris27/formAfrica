@@ -2,18 +2,24 @@ import Formation from "../models/formation.model.js";
 
 export const createFormation = async (req, res, next) => {
     try {
-        const newFormation = new Formation(req.body);
-        await newFormation.save();
-        res.status(201).json({
-            success: true,
-            data: newFormation,
-        });
+      const formation = await Formation.create({
+        ...req.body,
+        createdBy: req.user._id
+      });
+  
+      res.status(201).json({
+        success: true,
+        data: formation
+      });
+  
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };
 
-export const getFormations = async (req, res, next) => {
+
+  
+export const getAllFormations = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
@@ -83,21 +89,28 @@ export const updateFormation = async (req, res, next) => {
     }
 };
 
-export const deleteFormation = async (req, res, next) => {
-    try {
-        const formation = await Formation.findByIdAndDelete(req.params.id);
+export const disableFormation = async (req, res, next) => {
+  try {
+    const formation = await Formation.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false },
+      { new: true }
+    );
 
-        if (!formation) {
-            const error = new Error("Formation not found");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        res.status(200).json({
-            success: true,
-            data: {},
-        });
-    } catch (error) {
-        next(error);
+    if (!formation) {
+      const error = new Error("Formation not found");
+      error.statusCode = 404;
+      throw error;
     }
+
+    res.status(200).json({
+      success: true,
+      message: "Formation disabled successfully",
+      data: formation
+    });
+
+  } catch (error) {
+    next(error);
+  }
 };
+

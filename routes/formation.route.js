@@ -1,24 +1,24 @@
 import express from 'express';
 import {
     createFormation,
-    getFormations,
-    getFormation,
-    updateFormation,
-    deleteFormation,
+ 
 } from '../controllers/formation.controller.js';
+import authorize from '../middlewares/auth.middleware.js';
+import restrictTo from "../middlewares/role.middleware.js";
+
 
 const FormationRouter = express.Router();
 
 
 
-FormationRouter.get('/', getFormations);
+// FormationRouter.get('/',authorize,restrictTo('trainer'), getFormations);
 
-FormationRouter.get('/:id', getFormation);
+// FormationRouter.get('/:id', getFormation);
 
-FormationRouter.post('/', createFormation);
+FormationRouter.post('/',authorize,restrictTo('trainer', 'admin'),  createFormation);
 
-FormationRouter.put('/:id', updateFormation);
+// FormationRouter.put('/:id', updateFormation);
 
-FormationRouter.delete('/:id', deleteFormation);
+// FormationRouter.delete('/:id', deleteFormation);
 
 export default FormationRouter;
