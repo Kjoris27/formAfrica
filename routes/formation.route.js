@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     createFormation,
+    updateFormation
  
 } from '../controllers/formation.controller.js';
 import authorize from '../middlewares/auth.middleware.js';
@@ -17,7 +18,7 @@ const FormationRouter = express.Router();
 
 FormationRouter.post('/',authorize,restrictTo('trainer', 'admin'),  createFormation);
 
-// FormationRouter.put('/:id', updateFormation);
+FormationRouter.put('/:id', updateFormation);
 
 // FormationRouter.delete('/:id', deleteFormation);
 
