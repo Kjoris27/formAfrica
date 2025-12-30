@@ -117,3 +117,67 @@ export const deleteUser = async (req, res, next) => {
     }
 };
 
+
+export const updateUserRole = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { role, action } = req.body;
+  
+      const validRoles = ['admin', 'trainer', 'trainee', 'center'];
+  
+      if (!validRoles.includes(role)) {
+        const error = new Error('Invalid role specified');
+        error.statusCode = 400;
+        throw error;
+      }
+  
+      if (!['add', 'remove'].includes(action)) {
+        const error = new Error('Invalid action. Use add or remove.');
+        error.statusCode = 400;
+        throw error;
+      }
+  
+      // 1️⃣ Lire l'utilisateur AVANT modification
+      const existingUser = await User.findById(id);
+  
+      if (!existingUser) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+      }
+  
+      // 2️⃣ Règle métier : au moins un rôle
+      if (
+        action === 'remove' &&
+        existingUser.roles.length === 1 &&
+        existingUser.roles.includes(role)
+      ) {
+        const error = new Error('User must have at least one role');
+        error.statusCode = 400;
+        throw error;
+      }
+  
+      // 3️⃣ Construction de l’update
+      const update =
+        action === 'add'
+          ? { $addToSet: { roles: role } }
+          : { $pull: { roles: role } };
+  
+      // 4️⃣ Mise à jour
+      const user = await User.findByIdAndUpdate(
+        id,
+        update,
+        { new: true }
+      ).select('-password');
+  
+      res.status(200).json({
+        success: true,
+        message: `Role ${action === 'add' ? 'added' : 'removed'} successfully`,
+        data: user
+      });
+  
+    } catch (error) {
+      next(error);
+    }
+  };
+  
