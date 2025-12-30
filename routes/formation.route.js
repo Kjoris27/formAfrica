@@ -18,7 +18,7 @@ const FormationRouter = express.Router();
 
 FormationRouter.post('/',authorize,restrictTo('trainer', 'admin'),  createFormation);
 
-FormationRouter.put('/:id', updateFormation);
+FormationRouter.put('/:id',authorize,restrictTo('trainer', 'admin'), updateFormation);
 
 // FormationRouter.delete('/:id', deleteFormation);
 

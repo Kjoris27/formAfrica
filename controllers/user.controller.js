@@ -58,3 +58,62 @@ export const getUser = async(req, res, next) => {
 
 }
 
+export const updateUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (req.user._id.toString() !== id && req.user.role !== 'admin') {
+            const error = new Error('You are not authorized to update this user');
+            error.statusCode = 403;
+            throw error;
+        }
+
+        const user = await User.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true,
+        }).select('-password');
+
+        if (!user) {
+            const error = new Error('User not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            data: user,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (req.user._id.toString() !== id && req.user.role !== 'admin') {
+            const error = new Error('You are not authorized to delete this user');
+            error.statusCode = 403;
+            throw error;
+        }
+
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            const error = new Error('User not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User deleted successfully',
+            data: null,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+

@@ -16,8 +16,6 @@ export const createFormation = async (req, res, next) => {
       next(error);
     }
   };
-
-
   
 export const getAllFormations = async (req, res, next) => {
     try {
