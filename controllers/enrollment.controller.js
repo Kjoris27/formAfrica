@@ -1,13 +1,40 @@
 import Enrollment from "../models/enrollment.model.js";
+import Formation from "../models/formation.model.js";
+import mongoose from "mongoose";
+
+
 
 export const createEnrollment = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-        const newEnrollment = new Enrollment(req.body);
-        await newEnrollment.save();
-        res.status(201).json({
-            success: true,
-            data: newEnrollment,
-        });
+       const { formation } = req.body;
+       const user = req.user._id;
+
+       const existingFormation = await Formation.findById(formation).session(session);
+
+       if (!existingFormation) {
+        const error = new Error("Formation not found");
+        error.statusCode = 404;
+        throw error;
+       };
+
+        const existingEnrollment = await Enrollment.findOne({
+            user, formation
+        }).session(session);
+
+       if(existingEnrollment) {
+        const error = new Error("User is  already enrolled in this formation");
+        error.statusCode = 409;
+        throw Error;
+       }
+
+       
+
+
+
+
+
     } catch (error) {
         next(error);
     }

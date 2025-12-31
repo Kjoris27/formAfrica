@@ -45,6 +45,20 @@ const formationSchema = new mongoose.Schema({
   }
 }
 ,
+
+availableSpots: {
+    type: Number,
+    min: 0
+  },
+
+  startDate: {
+    type: Date, 
+    required: true
+  },
+
+  endDate: {
+    type: Date
+  },
   
     level: {
       type: String,
@@ -54,7 +68,9 @@ const formationSchema = new mongoose.Schema({
   
     maxStudents: {
       type: Number,
-      default: 20
+      default: 20,
+      min: [1, 'Minimum 1 participant required'],
+      required: true
     },
   
     status: {
@@ -79,6 +95,15 @@ const formationSchema = new mongoose.Schema({
     }
   
   }, { timestamps: true });
+
+
+  formationSchema.pre('save', function (next) {
+    if (this.isNew && this.availableSpots == null) {
+      this.availableSpots = this.maxStudents;
+    }
+    next();
+  });
+  
   
 const Formation = mongoose.model('Formation', formationSchema);
 export default Formation;

@@ -137,7 +137,6 @@ export const updateUserRole = async (req, res, next) => {
         throw error;
       }
   
-      // 1️⃣ Lire l'utilisateur AVANT modification
       const existingUser = await User.findById(id);
   
       if (!existingUser) {
@@ -146,7 +145,6 @@ export const updateUserRole = async (req, res, next) => {
         throw error;
       }
   
-      // 2️⃣ Règle métier : au moins un rôle
       if (
         action === 'remove' &&
         existingUser.roles.length === 1 &&
@@ -157,13 +155,11 @@ export const updateUserRole = async (req, res, next) => {
         throw error;
       }
   
-      // 3️⃣ Construction de l’update
       const update =
         action === 'add'
           ? { $addToSet: { roles: role } }
           : { $pull: { roles: role } };
   
-      // 4️⃣ Mise à jour
       const user = await User.findByIdAndUpdate(
         id,
         update,
