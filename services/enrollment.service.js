@@ -3,55 +3,56 @@ import Formation from '../models/formation.model.js';
 import Enrollment from '../models/enrollment.model.js';
 
 export const enrollUserToFormation = async ({ userId, formationId }) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
-  try {
-    // 1. Formation avec places disponibles
-    const formation = await Formation.findOneAndUpdate(
-      {
-        _id: formationId,
-        availableSpots: { $gt: 0 }
-      },
-      {
-        $inc: { availableSpots: -1 }
-      },
-      {
-        new: true,
-        session
+    const session = await mongoose.startSession();
+    session.startTransaction();
+  
+    try {
+      const formation = await Formation.findById(formationId).session(session);
+  
+      if (!formation) {
+        const error = new Error('Formation not found');
+        error.statusCode = 404;
+        throw error;
       }
-    );
-
-    if (!formation) {
-      throw new Error('No more spots available or formation not found');
-    }
-
-    const existingEnrollment = await Enrollment.findOne({
-      user: userId,
-      formation: formationId
-    }).session(session);
-
-    if (existingEnrollment) {
-      throw new Error('User is already enrolled in this formation');
-    }
-
-    const enrollment = await Enrollment.create(
-      [{
+  
+      if (formation.availableSpots <= 0) {
+        const error = new Error('No more spots available');
+        error.statusCode = 409;
+        throw error;
+      }
+  
+      const existingEnrollment = await Enrollment.findOne({
         user: userId,
-        formation: formationId,
-        status: 'enrolled'
-      }],
-      { session }
-    );
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return enrollment[0];
-
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
-  }
-};
+        formation: formationId
+      }).session(session);
+  
+      if (existingEnrollment) {
+        const error = new Error('User is already enrolled in this formation');
+        error.statusCode = 409;
+        throw error;
+      }
+  
+      formation.availableSpots -= 1;
+      await formation.save({ session });
+  
+      const enrollment = await Enrollment.create(
+        [{
+          user: userId,
+          formation: formationId,
+          status: 'enrolled'
+        }],
+        { session }
+      );
+  
+      await session.commitTransaction();
+      session.endSession();
+  
+      return enrollment[0];
+  
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
+  };
+  

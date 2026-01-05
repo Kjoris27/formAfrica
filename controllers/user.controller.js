@@ -1,5 +1,24 @@
 import User from "../models/user.model.js";
 
+import { getUserWithFormations } from '../services/getUserWithFormations.service.js';
+
+export const getUserDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const data = await getUserWithFormations(id);
+
+    res.status(200).json({
+      success: true,
+      data
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 export const getUsers = async (req, res, next) => {
     try {
       const page = Math.max(parseInt(req.query.page) || 1, 1);
@@ -13,11 +32,34 @@ export const getUsers = async (req, res, next) => {
       const totalUsers = await User.countDocuments();
       const totalPages = Math.ceil(totalUsers / pageSize);
   
-      const users = await User.find()
+      let users = await User.find()
         .select('-password')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(pageSize);
+        .limit(pageSize)
+        .populate({
+          path: 'createdFormations',
+          select: 'title description category'
+        })
+        .populate({
+          path: 'enrolledFormations',
+          select: 'formation status',
+          populate: {
+            path: 'formation',
+            select: 'title description category'
+          }
+        });
+
+      users = users.map(user => {
+        const userObject = user.toObject();
+        if (!userObject.roles.includes('trainer') && !userObject.roles.includes('admin')) {
+          userObject.createdFormations = [];
+        }
+        if (!userObject.roles.includes('trainee')) {
+          userObject.enrolledFormations = [];
+        }
+        return userObject;
+      });
   
       res.status(200).json({
         success: true,
@@ -57,6 +99,8 @@ export const getUser = async(req, res, next) => {
     }
 
 }
+
+
 
 export const updateUser = async (req, res, next) => {
     try {

@@ -56,7 +56,21 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true } });
+
+userSchema.virtual('createdFormations', {
+    ref: 'Formation',
+    localField: '_id',
+    foreignField: 'createdBy',
+    justOne: false
+});
+
+userSchema.virtual('enrolledFormations', {
+    ref: 'Enrollment',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false
+});
 
 const User = mongoose.model('User', userSchema);
 export default User;

@@ -48,7 +48,7 @@ const formationSchema = new mongoose.Schema({
 
 availableSpots: {
     type: Number,
-    min: 0,
+    min: 1,
     required: true
   },
 
@@ -93,12 +93,7 @@ availableSpots: {
   }, { timestamps: true });
 
 
-  formationSchema.pre('save', function (next) {
-    if (this.isNew && this.availableSpots == null) {
-      this.availableSpots = this.maxStudents;
-    }
-    next();
-  });
+  
   
   
 const Formation = mongoose.model('Formation', formationSchema);
