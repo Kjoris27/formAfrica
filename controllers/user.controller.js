@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 
 import { getUserWithFormations } from '../services/getUserWithFormations.service.js';
+import { getFormationManagement } from '../services/getFormationManagement.service.js';
 
 export const getUserDetails = async (req, res, next) => {
   try {
@@ -216,6 +217,23 @@ export const updateUserRole = async (req, res, next) => {
         data: user
       });
   
+    } catch (error) {
+      next(error);
+    }
+  };
+  
+
+  export const getFormationInfos = async (req, res, next) => {
+    try {
+      const data = await getFormationManagement({
+        formationId: req.params.id,
+        requester: req.user
+      });
+  
+      res.status(200).json({
+        success: true,
+        data
+      });
     } catch (error) {
       next(error);
     }
