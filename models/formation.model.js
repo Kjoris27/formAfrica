@@ -48,7 +48,8 @@ const formationSchema = new mongoose.Schema({
 
 availableSpots: {
     type: Number,
-    min: 0
+    min: 0,
+    required: true
   },
 
   startDate: {
@@ -66,12 +67,7 @@ availableSpots: {
       default: 'beginner'
     },
   
-    maxStudents: {
-      type: Number,
-      default: 20,
-      min: [1, 'Minimum 1 participant required'],
-      required: true
-    },
+   
   
     status: {
       type: String,

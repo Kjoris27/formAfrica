@@ -6,6 +6,7 @@ import {
     updateEnrollment,
     deleteEnrollment,
 } from '../controllers/enrollment.controller.js';
+import authorize from '../middlewares/auth.middleware.js';
 
 const enrollmentRouter = Router();
 
@@ -15,7 +16,7 @@ enrollmentRouter.get('/', getEnrollments)
 
 enrollmentRouter.get('/:id', getEnrollment)
 
-enrollmentRouter.post('/', createEnrollment)
+enrollmentRouter.post('/', authorize, createEnrollment)
 
 enrollmentRouter.put('/:id', updateEnrollment)
 
