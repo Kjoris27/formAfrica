@@ -76,14 +76,22 @@ availableSpots: {
     },
   
     location: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      country: { type: String, required: true },
-      coordinates: {
-        lat: Number,
-        lng: Number
-      }
+  address: String,
+  city: String,
+  country: String,
+  geo: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
     },
+    coordinates: {
+      type: [Number], 
+      required: true
+    }
+  }
+}
+,
   
     isActive: {
       type: Boolean,
@@ -91,6 +99,8 @@ availableSpots: {
     }
   
   }, { timestamps: true });
+
+formationSchema.index({ 'location.geo': '2dsphere' });
 
 
   
