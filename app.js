@@ -5,6 +5,8 @@ import authRouter from './routes/auth.route.js';
 import userRouter from "./routes/user.route.js";
 import arcjetMiddleware from './middlewares/arcjet.middleware.js';
 import errorMiddleware from './middlewares/error.middleware.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
 
 import cookieParser from "cookie-parser";
@@ -12,6 +14,36 @@ import FormationRouter from './routes/formation.route.js';
 import enrollmentRouter from './routes/enrollment.route.js';
 
 const app = express();
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Form Africa API',
+            version: '1.0.0',
+            description: 'API for Form Africa'
+        },
+        servers: [
+            {
+                url: 'http://localhost:5500',
+                description: 'Local Development Server'
+            }
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
+    },
+    apis: ['./routes/*.route.js'],
+}
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
