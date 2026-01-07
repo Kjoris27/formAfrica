@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Formation from '../models/formation.model.js';
 import Enrollment from '../models/enrollment.model.js';
+import Ticket from '../models/ticket.model.js';
 
 export const enrollUserToFormation = async ({ userId, formationId }) => {
     const session = await mongoose.startSession();
@@ -44,10 +45,17 @@ export const enrollUserToFormation = async ({ userId, formationId }) => {
         { session }
       );
   
+      const newTicket = await Ticket.create([{
+        enrollment: enrollment[0]._id,
+        user: userId,
+        formation: formationId,
+        qrCodeData: `${enrollment[0]._id}-${userId}-${formationId}-${new Date().getTime()}`
+      }], { session });
+
       await session.commitTransaction();
       session.endSession();
   
-      return enrollment[0];
+      return { enrollment: enrollment[0], ticket: newTicket[0] };
   
     } catch (error) {
       await session.abortTransaction();
