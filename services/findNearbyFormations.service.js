@@ -5,7 +5,6 @@ export const findNearbyFormations = async (lat, lng, radius = 10) => {
     return Formation.find({
         status: 'published',
         availableSpots: { $gt: 0 },
-        startDate: { $lte: new Date() },
       'location.geo': {
         $nearSphere: {
           $geometry: {

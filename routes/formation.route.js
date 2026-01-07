@@ -7,6 +7,7 @@ import {
 } from '../controllers/formation.controller.js';
 import authorize from '../middlewares/auth.middleware.js';
 import restrictTo from "../middlewares/role.middleware.js";
+import { findFormationsNearBy } from '../controllers/formation.controller.js';
 
 
 const FormationRouter = express.Router();   
@@ -15,6 +16,7 @@ const FormationRouter = express.Router();
 
 FormationRouter.get('/',authorize,restrictTo('trainer', 'admin'), getAllFormations);
 
+FormationRouter.get('/nearby',authorize,findFormationsNearBy);
 // FormationRouter.get('/:id', getFormation);
 
 FormationRouter.post('/',authorize,restrictTo('trainer', 'admin'),  createFormation);

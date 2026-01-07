@@ -1,4 +1,5 @@
 import Formation from "../models/formation.model.js";
+import { findNearbyFormations } from "../services/findNearbyFormations.service.js";
 
 export const createFormation = async (req, res, next) => {
     try {
@@ -112,3 +113,16 @@ export const disableFormation = async (req, res, next) => {
   }
 };
 
+
+export const findFormationsNearBy = async (req, res, next) => {
+  try {
+    const { lat, lng, radius } = req.query;
+    const formations = await findNearbyFormations(lat, lng, radius);
+    res.status(200).json({
+      success: true,
+      data: formations
+    });
+  } catch (error) {
+    next(error);
+  }
+};
