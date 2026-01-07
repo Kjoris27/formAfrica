@@ -1,5 +1,7 @@
 import Enrollment from "../models/enrollment.model.js";
 import { enrollUserToFormation } from '../services/enrollment.service.js';
+import Ticket from "../models/ticket.model.js";
+
 
 export const createEnrollment = async (req, res, next) => {
   try {
@@ -8,9 +10,20 @@ export const createEnrollment = async (req, res, next) => {
       formationId: req.body.formation
     });
 
+    const newTicket = await Ticket.create({
+        enrollment: enrollment._id,
+        user: req.user._id,
+        formation: req.body.formation,
+        qrCodeData: `${enrollment._id}-${enrollment.user}-${enrollment.formation}-${new Date().getTime()}`
+    })
+
     res.status(201).json({
       success: true,
-      data: enrollment
+      message: "Enrollment created successfully",
+      data: {
+        enrollment,
+        ticket: newTicket
+      }
     });
 
   } catch (error) {
