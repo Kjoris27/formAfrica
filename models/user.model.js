@@ -1,4 +1,7 @@
 import mongoose from 'mongoose';
+import USER_ROLES from '../config/constant.js';
+
+
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -38,8 +41,8 @@ const userSchema = new mongoose.Schema({
     },
     roles: {
         type: [String],
-        enum: ['admin', 'trainer', 'trainee', 'center'],
-        default: ['trainee'],
+        enum: Object.values(USER_ROLES),
+        default: USER_ROLES.TRAINEE,
     },
     isActive: {
         type: Boolean,

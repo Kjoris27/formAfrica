@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import TICKET_STATUS from '../config/constant.js';
+
 
 const ticketSchema = new mongoose.Schema({
     ticketId: {
@@ -36,8 +38,8 @@ const ticketSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['active', 'expired', 'used'],
-        default: 'active'
+        enum: Object.values(TICKET_STATUS),
+        default: TICKET_STATUS.ACTIVE
     }
 
 }, { timestamps: true });

@@ -1,4 +1,9 @@
 import mongoose from 'mongoose';
+import { FORMATION_STATUS } from '../config/constant.js';
+import { DURATION_UNIT } from '../config/constant.js';
+import { STUDENT_LEVEL } from '../config/constant.js';
+import { CURRENCY } from '../config/constant.js';
+import { FORMATION_CATEGORY } from '../config/constant.js';
 
 const formationSchema = new mongoose.Schema({
     title: {
@@ -15,7 +20,7 @@ const formationSchema = new mongoose.Schema({
   
     category: {
       type: String,
-      enum: ['artisanat', 'bricolage', 'cuisine', 'couture', 'finance', 'other'],
+      enum: Object.values(FORMATION_CATEGORY),
       required: true
     },
   
@@ -32,15 +37,16 @@ const formationSchema = new mongoose.Schema({
   
     currency: {
       type: String,
-      enum: ['XOF', 'GHC', 'NGN', 'USD', 'EUR'],
-      default: 'XOF'
+      enum: Object.values(CURRENCY),
+      default: CURRENCY.XOF
     },
   
     duration: {
   value: { type: Number, required: true },
   unit: {
     type: String,
-    enum: ['hour', 'day', 'week', 'month'],
+    enum: Object.values(DURATION_UNIT),
+    default: DURATION_UNIT.HOUR?
     required: true
   }
 }
@@ -63,17 +69,16 @@ availableSpots: {
   
     level: {
       type: String,
-      enum: ['beginner', 'intermediate', 'advanced'],
-      default: 'beginner'
+      enum: Object.values(STUDENT_LEVEL),
+      default: STUDENT_LEVEL.BEGINNER
     },
   
    
   
     status: {
       type: String,
-      enum: ['draft', 'published', 'archived'],
-      default: 'draft'
-    },
+      enum: Object.values(FORMATION_STATUS),
+default: FORMATION_STATUS.DRAFT    },
   
     location: {
   address: String,
