@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import USER_ROLES from '../config/constant.js';
+import { USER_ROLES } from '../config/constant.js';
 
 
 

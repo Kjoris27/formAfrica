@@ -46,7 +46,7 @@ const formationSchema = new mongoose.Schema({
   unit: {
     type: String,
     enum: Object.values(DURATION_UNIT),
-    default: DURATION_UNIT.HOUR?
+    default: DURATION_UNIT.HOUR,
     required: true
   }
 }

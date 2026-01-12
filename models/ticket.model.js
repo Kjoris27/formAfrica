@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import TICKET_STATUS from '../config/constant.js';
+import { TICKET_STATUS } from '../config/constant.js';
 
 
 const ticketSchema = new mongoose.Schema({

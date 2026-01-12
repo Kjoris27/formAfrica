@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 
-import { getUserWithFormations } from '../services/getUserWithFormations.service.js';
-import { getFormationManagement } from '../services/getFormationManagement.service.js';
+import { getUserWithFormations, getFormationManagement } from '../services/formation.service.js';
 
 export const getUserDetails = async (req, res, next) => {
   try {

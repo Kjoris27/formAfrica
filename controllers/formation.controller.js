@@ -1,5 +1,5 @@
 import Formation from "../models/formation.model.js";
-import { findNearbyFormations } from "../services/findNearbyFormations.service.js";
+import { findNearbyFormations } from "../services/formation.service.js";
 
 export const createFormation = async (req, res, next) => {
     try {
@@ -61,6 +61,11 @@ export const getFormation = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
+
+
 
 export const updateFormation = async (req, res, next) => {
     try {

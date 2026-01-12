@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Formation from '../models/formation.model.js';
 import Enrollment from '../models/enrollment.model.js';
 import Ticket from '../models/ticket.model.js';
+import { ENROLLMENT_STATUS } from '../config/constant.js';
 
 export const enrollUserToFormation = async ({ userId, formationId }) => {
     const session = await mongoose.startSession();
@@ -40,7 +41,7 @@ export const enrollUserToFormation = async ({ userId, formationId }) => {
         [{
           user: userId,
           formation: formationId,
-          status: 'enrolled'
+          status: ENROLLMENT_STATUS.ENROLLED
         }],
         { session }
       );
