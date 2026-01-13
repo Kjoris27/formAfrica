@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: formafrica-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Les autres variables d'environnement doivent être configurées dans le dashboard Render
+      # DB_URI, JWT_SECRET, JWT_EXPIRES_IN, ARCJET_KEY, ARCJET_ENV
+

@@ -23,6 +23,8 @@ export const createEnrollment = async (req, res, next) => {
   }
 };
 
+
+
 export const getEnrollments = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -47,6 +49,8 @@ export const getEnrollments = async (req, res, next) => {
         next(error);
     }
 };
+
+
 
 export const getEnrollment = async (req, res, next) => {
     try {

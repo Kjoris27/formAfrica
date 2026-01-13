@@ -75,5 +75,7 @@ userSchema.virtual('enrolledFormations', {
     justOne: false
 });
 
+userSchema.index({createdAt: -1});
+
 const User = mongoose.model('User', userSchema);
 export default User;

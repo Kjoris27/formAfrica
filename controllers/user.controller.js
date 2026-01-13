@@ -22,52 +22,39 @@ export const getUserDetails = async (req, res, next) => {
 export const getUsers = async (req, res, next) => {
     try {
       const page = Math.max(parseInt(req.query.page) || 1, 1);
-      const pageSize = Math.min(
-        Math.max(parseInt(req.query.pageSize) || 10, 1),
-        100
-      );
-  
-      const skip = (page - 1) * pageSize;
-  
-      const totalUsers = await User.countDocuments();
-      const totalPages = Math.ceil(totalUsers / pageSize);
-  
-      let users = await User.find()
-        .select('-password')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(pageSize)
-        .populate({
-          path: 'createdFormations',
-          select: 'title description category'
-        })
-        .populate({
-          path: 'enrolledFormations',
-          select: 'formation status',
-          populate: {
-            path: 'formation',
-            select: 'title description category'
+      const pageSize = Math.min(Math.max(parseInt(req.query.pageSize) || 10, 1),100);
+    
+        let users = await User.aggregate([
+          {$sort: {createdAt: -1}},
+          {$limit: pageSize},
+          {
+            $lookup :{
+              from:'formations',
+              localField: 'createdFormations',
+              foreignField:'_id',
+              as: 'createdFormations'
+            }
           }
-        });
 
-      users = users.map(user => {
-        const userObject = user.toObject();
-        if (!userObject.roles.includes('trainer') && !userObject.roles.includes('admin')) {
-          userObject.createdFormations = [];
+        ]);
+
+ 
+      let users = users.map(user => {
+        if (!user.roles.includes('trainer') && !user.roles.includes('admin')) {
+          user.createdFormations = [];
         }
-        if (!userObject.roles.includes('trainee')) {
-          userObject.enrolledFormations = [];
+        if (!user.roles.includes('trainee')) {
+          user.enrolledFormations = [];
         }
-        return userObject;
+        return user;
       });
+      
   
       res.status(200).json({
         success: true,
         count: users.length,
         page,
         pageSize,
-        // totalPages,
-        // totalUsers,
         data: users
       });
   
@@ -87,8 +74,6 @@ export const getUser = async(req, res, next) => {
             throw error;
 
         }
-
-
         res.status(200).json({
             success: true,
             data: user
