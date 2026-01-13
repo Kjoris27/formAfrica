@@ -65,3 +65,4 @@ typings/
 
 # Other files to ignore
 package-lock.json
+DEPLOYMENT_RENDER.md

@@ -25,8 +25,12 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:5500',
-                description: 'Local Development Server'
+                url: process.env.NODE_ENV === 'production' 
+                    ? process.env.API_URL || 'https://formafrica-api.onrender.com'
+                    : 'http://localhost:5500',
+                description: process.env.NODE_ENV === 'production' 
+                    ? 'Production Server' 
+                    : 'Local Development Server'
             }
         ],
         components: {
